@@ -19,6 +19,11 @@
     - wp_admin: "admin"
     - wp_admin_password: "alksjd712fdUINA"
     - wp_admin_email: "admin@wp.com"
+    - wp_user_login: "nafan"
+    - wp_user_password: "ajksdhakhdg"
+    - wp_user_email: "nafanpzk@mail.ru"
+    - wp_user_role: "author"
+    - wp_user_visible_name: "nafan"
   roles: 
     - database
     - backend
