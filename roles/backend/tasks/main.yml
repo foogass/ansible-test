@@ -12,6 +12,7 @@
     - libapache2-mod-php
     - php-mcrypt
     - memcached
+    - curl
 
 - name: start apache
   service: name=apache2 state=started enabled=yes
@@ -30,8 +31,8 @@
   notify:
     - restart apache
 
-- name: change wordpress config file
-  command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php creates=/var/www/wordpress/wp-config.php
+#- name: change wordpress config file
+#  command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php creates=/var/www/wordpress/wp-config.php
 
 - name: create upload folder
   file: path=/var/www/wordpress/wp-content/uploads state=directory mode=0755 owner=www-data
@@ -45,3 +46,17 @@
     - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', '{{wp_mysql_db}}');"}
     - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', '{{wp_mysql_user}}');"}
     - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{wp_mysql_password}}');"}
+
+- name: download wp-cli package
+  get_url: 
+    url=https://github.com/wp-cli/builds/blob/gh-pages/deb/php-wpcli_1.5.0_all.deb
+    dest=/root/wp-cli.deb
+
+- name: install wp-cli
+  apt: deb=/root/wp-cli.deb
+
+- name: initialize wordpress
+  command: wp core install --url
+
+- name: add wordpress users
+  command: wp user create {{ wp_user_login }} {{ wp_user_email }} --role={{ wp_user_role }} --user_pass={{ wp_user_password }} --display_name={{ wp_user_visible_name }}
