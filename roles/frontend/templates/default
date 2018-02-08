@@ -1,0 +1,11 @@
+upstream backend {
+	server wordpress.backend
+}
+
+server {
+	listen 80;
+	server_name example.frontend www.example.frontend;
+	location / {
+		proxy_pass http://backend;
+	}
+}

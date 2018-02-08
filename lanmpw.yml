@@ -1,0 +1,16 @@
+ ---
+- hosts: nginx
+  sudo: yes
+  roles:
+    - frontend
+    
+- hosts: wordpress
+  sudo: yes
+  vars:
+    - mysql_root_password: "lajhdjaskd64jgAKAHSGD"
+    - wp_mysl_db: "wordpress"
+    - wp_mysql_user: "wordpress"
+    - wp_mysql_password: "ajsJAjsHaajs7"
+  roles: 
+    - database
+    - backend

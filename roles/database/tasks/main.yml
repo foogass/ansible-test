@@ -1,0 +1,40 @@
+# roles/database/tasks/main.yml
+---
+- name: update cache
+  apt: update_cache=yes
+
+- name: install mysql
+  apt: name={{ item }} state=present
+  with_items:
+    - python-mysqldb
+    - mysql-server
+
+- name: update mysql root password
+  mysql_user: name=root host={{ item }} password={{ mysql_root_password }} state=present
+  with_items:
+    - "{{ ansible_hostname }}"
+    - localhost
+    - 127.0.0.1
+    - ::1
+
+- name: copy root credentials as .my.cnf file
+  template: src=root.cnf dest=~/.my.cnf mode=0600
+
+- name: remove test database
+  mysql_db: name=test state=absent
+  notify:
+    - restart mysql
+
+- name: create mysql database for wordpress
+  mysql_db:
+    name={{ wp_mysql_db }}
+    state=present
+    login_user=root
+    login_password={{ mysql_root_password }}
+
+- name: create mysql user for wordpress
+  mysql_db:
+    name={{ wp_mysql_user }}
+    state=present
+    login_user=root
+    login_password={{ mysql_root_password }}

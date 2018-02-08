@@ -1,0 +1,16 @@
+# roles/frontend/tasks/nginx.yml
+---
+- name: update cache
+  apt: update_cache=yes
+
+- name: install nginx
+  apt: name=nginx state=present
+
+- name: remove default nginx config
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: create nginx config
+  template: src=default dest=/etc/nginx/sites-enabled/default owner=www-data group=www-data
+
+- name: start nginx
+  service: name=nginx state=started enabled=yes
