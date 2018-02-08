@@ -31,8 +31,8 @@
   notify:
     - restart apache
 
-#- name: change wordpress config file
-#  command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php creates=/var/www/wordpress/wp-config.php
+- name: change wordpress config file
+  command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php creates=/var/www/wordpress/wp-config.php
 
 - name: create upload folder
   file: path=/var/www/wordpress/wp-content/uploads state=directory mode=0755 owner=www-data
@@ -55,8 +55,8 @@
 - name: install wp-cli
   apt: deb=/root/wp-cli.deb
 
-- name: initialize wordpress
-  command: wp core install --url
+- name: install wordpress admin role
+  command: wp core install --url={{ wp_domain }} --title={{ wp_title }} --admin_user={{ wp_admin }} --admin_password={{ wp_admin_password }} --admin_email={{ wp_admin_email }}
 
 - name: add wordpress users
   command: wp user create {{ wp_user_login }} {{ wp_user_email }} --role={{ wp_user_role }} --user_pass={{ wp_user_password }} --display_name={{ wp_user_visible_name }}
