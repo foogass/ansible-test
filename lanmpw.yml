@@ -1,6 +1,9 @@
  ---
 - hosts: nginx
   sudo: yes
+  vars:
+    - backend_server1: wp1.backend
+    - backend_server2: wp2.backend
   roles:
     - frontend
     
